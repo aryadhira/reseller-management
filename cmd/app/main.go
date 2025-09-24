@@ -3,12 +3,12 @@ package main
 import (
 	"log"
 
-	"github.com/aryadhira/go-fiber-template/internal/config"
-	"github.com/aryadhira/go-fiber-template/internal/database"
-	"github.com/aryadhira/go-fiber-template/internal/handlers"
-	"github.com/aryadhira/go-fiber-template/internal/repository"
-	"github.com/aryadhira/go-fiber-template/internal/routes"
-	"github.com/aryadhira/go-fiber-template/internal/services"
+	"github.com/aryadhira/reseller-management/internal/config"
+	"github.com/aryadhira/reseller-management/internal/database"
+	"github.com/aryadhira/reseller-management/internal/handlers"
+	"github.com/aryadhira/reseller-management/internal/repository"
+	"github.com/aryadhira/reseller-management/internal/routes"
+	"github.com/aryadhira/reseller-management/internal/services"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -47,7 +47,7 @@ func main() {
 	userHandler := handlers.NewUserHandler(userService)
 
 	app := fiber.New(fiber.Config{
-		AppName: "Go Fiber Template",
+		AppName: "Reseller Management",
 	})
 
 	// middleware

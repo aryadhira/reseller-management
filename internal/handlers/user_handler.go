@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github.com/aryadhira/go-fiber-template/internal/interfaces"
+	"github.com/aryadhira/reseller-management/internal/interfaces"
 	"github.com/gofiber/fiber/v2"
 )
 

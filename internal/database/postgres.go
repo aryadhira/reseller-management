@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/aryadhira/go-fiber-template/internal/models"
+	"github.com/aryadhira/reseller-management/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

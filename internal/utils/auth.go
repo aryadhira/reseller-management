@@ -3,7 +3,7 @@ package utils
 import (
 	"time"
 
-	"github.com/aryadhira/go-fiber-template/internal/models"
+	"github.com/aryadhira/reseller-management/internal/models"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )

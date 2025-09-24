@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"github.com/aryadhira/go-fiber-template/internal/handlers"
-	"github.com/aryadhira/go-fiber-template/internal/middleware"
+	"github.com/aryadhira/reseller-management/internal/handlers"
+	"github.com/aryadhira/reseller-management/internal/middleware"
 	"github.com/gofiber/fiber/v2"
 )
 

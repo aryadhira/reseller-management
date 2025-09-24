@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 
-	"github.com/aryadhira/go-fiber-template/internal/interfaces"
-	"github.com/aryadhira/go-fiber-template/internal/models"
+	"github.com/aryadhira/reseller-management/internal/interfaces"
+	"github.com/aryadhira/reseller-management/internal/models"
 	"gorm.io/gorm"
 )
 

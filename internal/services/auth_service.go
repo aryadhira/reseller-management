@@ -5,9 +5,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/aryadhira/go-fiber-template/internal/interfaces"
-	"github.com/aryadhira/go-fiber-template/internal/models"
-	"github.com/aryadhira/go-fiber-template/internal/utils"
+	"github.com/aryadhira/reseller-management/internal/interfaces"
+	"github.com/aryadhira/reseller-management/internal/models"
+	"github.com/aryadhira/reseller-management/internal/utils"
 	"github.com/google/uuid"
 )
 

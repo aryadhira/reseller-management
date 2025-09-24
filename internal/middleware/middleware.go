@@ -3,7 +3,7 @@ package middleware
 import (
 	"strings"
 
-	"github.com/aryadhira/go-fiber-template/internal/utils"
+	"github.com/aryadhira/reseller-management/internal/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

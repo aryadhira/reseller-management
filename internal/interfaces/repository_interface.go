@@ -3,7 +3,7 @@ package interfaces
 import (
 	"context"
 
-	"github.com/aryadhira/go-fiber-template/internal/models"
+	"github.com/aryadhira/reseller-management/internal/models"
 )
 
 type UserRepository interface {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/aryadhira/go-fiber-template/internal/models"
+	"github.com/aryadhira/reseller-management/internal/models"
 )
 
 type AuthService interface {
