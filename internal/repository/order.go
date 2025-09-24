@@ -20,16 +20,9 @@ func (r *orderRepository) Create(order *models.Order) error {
 			return err
 		}
 
-		// Create order items
-		for i := range order.OrderItems {
-			order.OrderItems[i].OrderID = order.ID
-			if err := tx.Create(&order.OrderItems[i]).Error; err != nil {
-				return err
-			}
-		}
-
 		return nil
 	})
+
 }
 
 func (r *orderRepository) GetAll() ([]models.Order, error) {
