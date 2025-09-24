@@ -1,7 +1,7 @@
 package config
 
 import (
-	"errors"
+	"log"
 	"os"
 	"time"
 
@@ -9,50 +9,52 @@ import (
 )
 
 type Config struct {
-	AppHost      string
-	AppPort      string
-	DBHost       string
-	DBPort       string
-	DBUsername   string
-	DBPassword   string
-	DBName       string
-	TokenSecret  string
-	TokenExpired time.Duration
+	AppHost    string
+	AppPort    string
+	DBHost     string
+	DBPort     string
+	DBUser     string
+	DBPassword string
+	DBName     string
+	DBSSLMode  string
+	JWTSecret  string
+	JWTExpired time.Duration
 }
 
-// Function load and wrap all environment variable as configuration
-func Load() (*Config, error) {
+func LoadConfig() *Config {
 	err := godotenv.Load()
 	if err != nil {
-		return nil, err
+		log.Println("No .env file found, using environment variables")
 	}
 
-	cfg := new(Config)
-	cfg.AppHost = os.Getenv("APP_HOST")
-	cfg.AppPort = os.Getenv("APP_PORT")
-	cfg.DBHost = os.Getenv("DB_HOST")
-	cfg.DBPort = os.Getenv("DB_PORT")
-	cfg.DBUsername = os.Getenv("DB_USERNAME")
-	cfg.DBPassword = os.Getenv("DB_PASSWORD")
-	cfg.DBName = os.Getenv("DB_NAME")
-
-	if os.Getenv("TOKEN_SECRET") != "" {
-		cfg.TokenSecret = os.Getenv("TOKEN_SECRET")
-	} else {
-		return nil, errors.New("token secret can't be empty")
-	}
-
+	var tokenExpired time.Duration
 	if os.Getenv("TOKEN_EXPIRED") != "" {
 		expiration, err := time.ParseDuration(os.Getenv("TOKEN_EXPIRED"))
 		if err != nil {
-			return nil, err
+			return nil
 		}
-
-		cfg.TokenExpired = expiration
-
+		tokenExpired = expiration
 	} else {
-		return nil, errors.New("token expired can't be empty")
+		tokenExpired = time.Duration(time.Hour * 1)
 	}
 
-	return cfg, nil
+	return &Config{
+		AppHost:    getEnvOrDefault("APP_HOST", "localhost"),
+		AppPort:    getEnvOrDefault("APP_PORT", "localhost"),
+		DBHost:     getEnvOrDefault("DB_HOST", "localhost"),
+		DBPort:     getEnvOrDefault("DB_PORT", "5432"),
+		DBUser:     getEnvOrDefault("DB_USER", "postgres"),
+		DBPassword: getEnvOrDefault("DB_PASSWORD", ""),
+		DBName:     getEnvOrDefault("DB_NAME", "reseller_management"),
+		DBSSLMode:  getEnvOrDefault("DB_SSL_MODE", "disable"),
+		JWTSecret:  getEnvOrDefault("TOKEN_SECRET", "your-secret-key"),
+		JWTExpired: tokenExpired,
+	}
+}
+
+func getEnvOrDefault(key, defaultValue string) string {
+	if value := os.Getenv(key); value != "" {
+		return value
+	}
+	return defaultValue
 }
