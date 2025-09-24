@@ -1,0 +1,1837 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "API for managing resellers, products, orders and financial transactions",
+        "title": "Reseller Management API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:3000",
+    "basePath": "/api/v1",
+    "paths": {
+        "/balance": {
+            "get": {
+                "description": "Get the current system balance",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Financial Management"
+                ],
+                "summary": "Get the current balance",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Balance"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update the initial balance and adjust accordingly",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Financial Management"
+                ],
+                "summary": "Update the initial balance",
+                "parameters": [
+                    {
+                        "description": "Balance information",
+                        "name": "balance",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.BalanceUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/dashboard": {
+            "get": {
+                "description": "Get an overview dashboard with current balance, cash flows, and alerts",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Get dashboard data",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/interfaces.DashboardData"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/orders": {
+            "get": {
+                "description": "Get a list of all orders",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order Management"
+                ],
+                "summary": "Get all orders",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Order"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new order for a selected reseller with multiple items",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order Management"
+                ],
+                "summary": "Create a new order",
+                "parameters": [
+                    {
+                        "description": "Order data",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Order"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Order"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/{id}": {
+            "get": {
+                "description": "Get an order by its unique ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order Management"
+                ],
+                "summary": "Get an order by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Order"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order Management"
+                ],
+                "summary": "Update an order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated order data",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Order"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Order"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete an existing order by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order Management"
+                ],
+                "summary": "Delete an order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/{id}/cancel": {
+            "patch": {
+                "description": "Cancel an existing order and restore stock quantities",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order Management"
+                ],
+                "summary": "Cancel an order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/payments": {
+            "get": {
+                "description": "Get a list of all payments linked to their respective orders and resellers",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payment Management"
+                ],
+                "summary": "Get all payments",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Payment"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/payments/order/{orderID}": {
+            "get": {
+                "description": "Get payment information for a specific order",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payment Management"
+                ],
+                "summary": "Get payment by order ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order ID",
+                        "name": "orderID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Payment"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/payments/order/{orderID}/pay": {
+            "post": {
+                "description": "Record a payment (partial or full) against an order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payment Management"
+                ],
+                "summary": "Record a payment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order ID",
+                        "name": "orderID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Payment information",
+                        "name": "payment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.PaymentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Payment"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/products": {
+            "get": {
+                "description": "Get a list of all products with current quantities",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product Management"
+                ],
+                "summary": "Get all products",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Product"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new product with provided details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product Management"
+                ],
+                "summary": "Create a new product",
+                "parameters": [
+                    {
+                        "description": "Product data",
+                        "name": "product",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Product"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Product"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/products/low-stock": {
+            "get": {
+                "description": "Get a list of products with stock levels below the minimum alert threshold",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product Management"
+                ],
+                "summary": "Get products with low stock",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Product"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{id}": {
+            "get": {
+                "description": "Get a product by its unique ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product Management"
+                ],
+                "summary": "Get a product by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Product"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing product's details (name, price, etc.)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product Management"
+                ],
+                "summary": "Update a product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated product data",
+                        "name": "product",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Product"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Product"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete an existing product by ID (with checks to ensure it's not used in any orders)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product Management"
+                ],
+                "summary": "Delete a product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{id}/restock": {
+            "post": {
+                "description": "Add quantity to an existing product's stock",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product Management"
+                ],
+                "summary": "Restock a product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Quantity to add",
+                        "name": "quantity",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.RestockRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Product"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/resellers": {
+            "get": {
+                "description": "Get a list of all resellers",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reseller Management"
+                ],
+                "summary": "Get all resellers",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Reseller"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new reseller with provided details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reseller Management"
+                ],
+                "summary": "Create a new reseller",
+                "parameters": [
+                    {
+                        "description": "Reseller data",
+                        "name": "reseller",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Reseller"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Reseller"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/resellers/{id}": {
+            "get": {
+                "description": "Get a reseller by its unique ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reseller Management"
+                ],
+                "summary": "Get a reseller by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Reseller ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Reseller"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing reseller's details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reseller Management"
+                ],
+                "summary": "Update a reseller",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Reseller ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated reseller data",
+                        "name": "reseller",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Reseller"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Reseller"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete an existing reseller by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reseller Management"
+                ],
+                "summary": "Delete a reseller",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Reseller ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/resellers/{id}/profile": {
+            "get": {
+                "description": "Get a reseller with their order history and payment status",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reseller Management"
+                ],
+                "summary": "Get reseller profile with order history",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Reseller ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Reseller"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/transactions": {
+            "get": {
+                "description": "Get a list of all financial transactions (CASH_IN and CASH_OUT)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Financial Management"
+                ],
+                "summary": "Get all transactions",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Transaction"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/transactions/cash-in": {
+            "post": {
+                "description": "Record a CASH_IN transaction for payments received",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Financial Management"
+                ],
+                "summary": "Record a cash in transaction",
+                "parameters": [
+                    {
+                        "description": "Cash in transaction data",
+                        "name": "transaction",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.CashInRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Transaction"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/transactions/cash-out": {
+            "post": {
+                "description": "Record a CASH_OUT transaction with category",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Financial Management"
+                ],
+                "summary": "Record a cash out transaction",
+                "parameters": [
+                    {
+                        "description": "Cash out transaction data",
+                        "name": "transaction",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.CashOutRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Transaction"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handlers.BalanceUpdateRequest": {
+            "description": "Balance update request information",
+            "type": "object",
+            "properties": {
+                "initial_balance": {
+                    "description": "New initial balance",
+                    "type": "number",
+                    "example": 10000
+                },
+                "notes": {
+                    "description": "Notes about the balance update",
+                    "type": "string",
+                    "example": "Adjusted initial balance"
+                }
+            }
+        },
+        "handlers.CashInRequest": {
+            "description": "Cash in request information",
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "description": "Amount of the cash in",
+                    "type": "number",
+                    "example": 2500
+                },
+                "description": {
+                    "description": "Description of the transaction",
+                    "type": "string",
+                    "example": "Payment received from client"
+                },
+                "reference_id": {
+                    "description": "Reference ID for the transaction",
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440001"
+                }
+            }
+        },
+        "handlers.CashOutRequest": {
+            "description": "Cash out request information",
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "description": "Amount of the cash out",
+                    "type": "number",
+                    "example": 3000
+                },
+                "category": {
+                    "description": "Category of the transaction",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.TransactionCategory"
+                        }
+                    ],
+                    "example": "SALARY"
+                },
+                "description": {
+                    "description": "Description of the transaction",
+                    "type": "string",
+                    "example": "Monthly salary payment"
+                }
+            }
+        },
+        "handlers.PaymentRequest": {
+            "description": "Payment request information",
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "description": "Amount to be paid",
+                    "type": "number",
+                    "example": 500
+                },
+                "notes": {
+                    "description": "Notes about the payment",
+                    "type": "string",
+                    "example": "Partial payment received"
+                }
+            }
+        },
+        "handlers.RestockRequest": {
+            "description": "Restock request information",
+            "type": "object",
+            "properties": {
+                "quantity": {
+                    "description": "Quantity to add to the product's stock",
+                    "type": "integer",
+                    "example": 20
+                }
+            }
+        },
+        "interfaces.DashboardData": {
+            "description": "Dashboard information",
+            "type": "object",
+            "properties": {
+                "all_time_cash_in": {
+                    "description": "Total cash in for all time",
+                    "type": "number",
+                    "example": 50000
+                },
+                "all_time_cash_out": {
+                    "description": "Total cash out for all time",
+                    "type": "number",
+                    "example": 25000
+                },
+                "current_balance": {
+                    "description": "Current balance in the system",
+                    "type": "number",
+                    "example": 12500.75
+                },
+                "low_stock_alerts": {
+                    "description": "Products with low stock alerts",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Product"
+                    }
+                },
+                "recent_transactions": {
+                    "description": "Recent transactions",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Transaction"
+                    }
+                },
+                "this_month_cash_in": {
+                    "description": "Total cash in for this month",
+                    "type": "number",
+                    "example": 15000
+                },
+                "this_month_cash_out": {
+                    "description": "Total cash out for this month",
+                    "type": "number",
+                    "example": 8000
+                },
+                "today_cash_in": {
+                    "description": "Total cash in for today",
+                    "type": "number",
+                    "example": 2500
+                },
+                "today_cash_out": {
+                    "description": "Total cash out for today",
+                    "type": "number",
+                    "example": 1200
+                },
+                "unpaid_orders": {
+                    "description": "Unpaid orders",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Order"
+                    }
+                }
+            }
+        },
+        "models.Balance": {
+            "description": "Balance information",
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "description": "Creation timestamp",
+                    "type": "string"
+                },
+                "current_balance": {
+                    "description": "Current balance amount",
+                    "type": "number",
+                    "example": 12500.75
+                },
+                "id": {
+                    "description": "Unique identifier for the entity",
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "initial_balance": {
+                    "description": "Initial balance amount",
+                    "type": "number",
+                    "example": 10000
+                },
+                "notes": {
+                    "description": "Notes about the balance",
+                    "type": "string",
+                    "example": "Adjusted initial balance"
+                },
+                "updated_at": {
+                    "description": "Last update timestamp",
+                    "type": "string"
+                }
+            }
+        },
+        "models.Order": {
+            "description": "Order information",
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "description": "Creation timestamp",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "Unique identifier for the entity",
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "notes": {
+                    "description": "Additional notes about the order",
+                    "type": "string",
+                    "example": "Special delivery instructions"
+                },
+                "order_date": {
+                    "description": "Date when the order was placed",
+                    "type": "string"
+                },
+                "order_items": {
+                    "description": "Items in the order (simplified to avoid recursion)",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.OrderItem"
+                    }
+                },
+                "payment": {
+                    "description": "Payment information for the order (simplified to avoid recursion)",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Payment"
+                        }
+                    ]
+                },
+                "payment_status": {
+                    "description": "Payment status of the order",
+                    "type": "string",
+                    "example": "unpaid"
+                },
+                "reseller": {
+                    "description": "Reseller who placed the order (simplified to avoid recursion)",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Reseller"
+                        }
+                    ]
+                },
+                "reseller_id": {
+                    "description": "ID of the reseller who placed the order",
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "status": {
+                    "description": "Status of the order",
+                    "type": "string",
+                    "example": "pending"
+                },
+                "total_amount": {
+                    "description": "Total amount of the order",
+                    "type": "number",
+                    "example": 1999.98
+                },
+                "updated_at": {
+                    "description": "Last update timestamp",
+                    "type": "string"
+                }
+            }
+        },
+        "models.OrderItem": {
+            "description": "Order item information",
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "description": "Creation timestamp",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "Unique identifier for the entity",
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "order": {
+                    "description": "Order this item belongs to (simplified to avoid recursion)",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Order"
+                        }
+                    ]
+                },
+                "order_id": {
+                    "description": "ID of the order this item belongs to",
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440001"
+                },
+                "price": {
+                    "description": "Price of the product at the time of order",
+                    "type": "number",
+                    "example": 999.99
+                },
+                "product": {
+                    "description": "Product being ordered (simplified to avoid recursion)",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Product"
+                        }
+                    ]
+                },
+                "product_id": {
+                    "description": "ID of the product in this order item",
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440002"
+                },
+                "quantity": {
+                    "description": "Quantity of the product ordered",
+                    "type": "integer",
+                    "example": 2
+                },
+                "subtotal": {
+                    "description": "Subtotal for this item (quantity * price)",
+                    "type": "number",
+                    "example": 1999.98
+                },
+                "updated_at": {
+                    "description": "Last update timestamp",
+                    "type": "string"
+                }
+            }
+        },
+        "models.Payment": {
+            "description": "Payment information",
+            "type": "object",
+            "properties": {
+                "amount_paid": {
+                    "description": "Amount that has been paid",
+                    "type": "number",
+                    "example": 500
+                },
+                "cash_in_transactions": {
+                    "description": "Cash in transactions associated with this payment (simplified to avoid recursion)",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Transaction"
+                    }
+                },
+                "created_at": {
+                    "description": "Creation timestamp",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "Unique identifier for the entity",
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "notes": {
+                    "description": "Additional notes about the payment",
+                    "type": "string",
+                    "example": "Partial payment received"
+                },
+                "order": {
+                    "description": "Order this payment is for (simplified to avoid recursion)",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Order"
+                        }
+                    ]
+                },
+                "order_id": {
+                    "description": "ID of the order this payment is for",
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440001"
+                },
+                "payment_date": {
+                    "description": "Date when the payment was made",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "Status of the payment",
+                    "type": "string",
+                    "example": "partially_paid"
+                },
+                "total_amount": {
+                    "description": "Total amount of the order",
+                    "type": "number",
+                    "example": 1999.98
+                },
+                "updated_at": {
+                    "description": "Last update timestamp",
+                    "type": "string"
+                }
+            }
+        },
+        "models.Product": {
+            "description": "Product information",
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "description": "Creation timestamp",
+                    "type": "string"
+                },
+                "current_stock": {
+                    "description": "Current stock quantity",
+                    "type": "integer",
+                    "example": 50
+                },
+                "description": {
+                    "description": "Product description",
+                    "type": "string",
+                    "example": "High performance laptop"
+                },
+                "id": {
+                    "description": "Unique identifier for the entity",
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "min_stock_alert": {
+                    "description": "Minimum stock alert threshold",
+                    "type": "integer",
+                    "example": 10
+                },
+                "name": {
+                    "description": "Product name",
+                    "type": "string",
+                    "example": "Laptop"
+                },
+                "order_items": {
+                    "description": "Order items associated with this product (simplified to avoid recursion)",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.OrderItem"
+                    }
+                },
+                "price": {
+                    "description": "Product price",
+                    "type": "number",
+                    "example": 999.99
+                },
+                "sku": {
+                    "description": "Product SKU (Stock Keeping Unit)",
+                    "type": "string",
+                    "example": "LAP-001"
+                },
+                "status": {
+                    "description": "Status of the product",
+                    "type": "string",
+                    "example": "active"
+                },
+                "updated_at": {
+                    "description": "Last update timestamp",
+                    "type": "string"
+                }
+            }
+        },
+        "models.Reseller": {
+            "description": "Reseller information",
+            "type": "object",
+            "properties": {
+                "address": {
+                    "description": "Reseller address",
+                    "type": "string",
+                    "example": "123 Main St, City, Country"
+                },
+                "created_at": {
+                    "description": "Creation timestamp",
+                    "type": "string"
+                },
+                "email": {
+                    "description": "Reseller email",
+                    "type": "string",
+                    "example": "john@example.com"
+                },
+                "id": {
+                    "description": "Unique identifier for the entity",
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "name": {
+                    "description": "Reseller name",
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "orders": {
+                    "description": "Orders associated with this reseller (simplified to avoid recursion)",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Order"
+                    }
+                },
+                "phone": {
+                    "description": "Reseller phone number",
+                    "type": "string",
+                    "example": "+1-234-567-8900"
+                },
+                "status": {
+                    "description": "Status of the reseller",
+                    "type": "string",
+                    "example": "active"
+                },
+                "updated_at": {
+                    "description": "Last update timestamp",
+                    "type": "string"
+                }
+            }
+        },
+        "models.Transaction": {
+            "description": "Transaction information",
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "description": "Amount of the transaction",
+                    "type": "number",
+                    "example": 3000
+                },
+                "category": {
+                    "description": "Category of the transaction",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.TransactionCategory"
+                        }
+                    ],
+                    "example": "SALARY"
+                },
+                "created_at": {
+                    "description": "Creation timestamp",
+                    "type": "string"
+                },
+                "date": {
+                    "description": "Date of the transaction",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "Description of the transaction",
+                    "type": "string",
+                    "example": "Monthly salary payment"
+                },
+                "id": {
+                    "description": "Unique identifier for the entity",
+                    "type": "string",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "payment_id": {
+                    "description": "Payment ID if this transaction is related to a payment",
+                    "type": "string"
+                },
+                "reference_id": {
+                    "description": "Reference ID for the transaction (e.g. Order ID, Payment ID)",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "Type of the transaction",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.TransactionType"
+                        }
+                    ],
+                    "example": "CASH_IN"
+                },
+                "updated_at": {
+                    "description": "Last update timestamp",
+                    "type": "string"
+                }
+            }
+        },
+        "models.TransactionCategory": {
+            "type": "string",
+            "enum": [
+                "RENT",
+                "SALARY",
+                "EQUIPMENT",
+                "PAYMENT",
+                "OTHER"
+            ],
+            "x-enum-comments": {
+                "PaymentTran": "Renamed from \"Payment\" to \"PaymentTran\" to avoid conflict with Payment model"
+            },
+            "x-enum-varnames": [
+                "Rent",
+                "Salary",
+                "Equipment",
+                "PaymentTran",
+                "Other"
+            ]
+        },
+        "models.TransactionType": {
+            "type": "string",
+            "enum": [
+                "CASH_IN",
+                "CASH_OUT"
+            ],
+            "x-enum-varnames": [
+                "CashIn",
+                "CashOut"
+            ]
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

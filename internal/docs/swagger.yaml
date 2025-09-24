@@ -1,0 +1,1265 @@
+basePath: /api/v1
+definitions:
+  handlers.BalanceUpdateRequest:
+    description: Balance update request information
+    properties:
+      initial_balance:
+        description: New initial balance
+        example: 10000
+        type: number
+      notes:
+        description: Notes about the balance update
+        example: Adjusted initial balance
+        type: string
+    type: object
+  handlers.CashInRequest:
+    description: Cash in request information
+    properties:
+      amount:
+        description: Amount of the cash in
+        example: 2500
+        type: number
+      description:
+        description: Description of the transaction
+        example: Payment received from client
+        type: string
+      reference_id:
+        description: Reference ID for the transaction
+        example: 550e8400-e29b-41d4-a716-446655440001
+        type: string
+    type: object
+  handlers.CashOutRequest:
+    description: Cash out request information
+    properties:
+      amount:
+        description: Amount of the cash out
+        example: 3000
+        type: number
+      category:
+        allOf:
+        - $ref: '#/definitions/models.TransactionCategory'
+        description: Category of the transaction
+        example: SALARY
+      description:
+        description: Description of the transaction
+        example: Monthly salary payment
+        type: string
+    type: object
+  handlers.PaymentRequest:
+    description: Payment request information
+    properties:
+      amount:
+        description: Amount to be paid
+        example: 500
+        type: number
+      notes:
+        description: Notes about the payment
+        example: Partial payment received
+        type: string
+    type: object
+  handlers.RestockRequest:
+    description: Restock request information
+    properties:
+      quantity:
+        description: Quantity to add to the product's stock
+        example: 20
+        type: integer
+    type: object
+  interfaces.DashboardData:
+    description: Dashboard information
+    properties:
+      all_time_cash_in:
+        description: Total cash in for all time
+        example: 50000
+        type: number
+      all_time_cash_out:
+        description: Total cash out for all time
+        example: 25000
+        type: number
+      current_balance:
+        description: Current balance in the system
+        example: 12500.75
+        type: number
+      low_stock_alerts:
+        description: Products with low stock alerts
+        items:
+          $ref: '#/definitions/models.Product'
+        type: array
+      recent_transactions:
+        description: Recent transactions
+        items:
+          $ref: '#/definitions/models.Transaction'
+        type: array
+      this_month_cash_in:
+        description: Total cash in for this month
+        example: 15000
+        type: number
+      this_month_cash_out:
+        description: Total cash out for this month
+        example: 8000
+        type: number
+      today_cash_in:
+        description: Total cash in for today
+        example: 2500
+        type: number
+      today_cash_out:
+        description: Total cash out for today
+        example: 1200
+        type: number
+      unpaid_orders:
+        description: Unpaid orders
+        items:
+          $ref: '#/definitions/models.Order'
+        type: array
+    type: object
+  models.Balance:
+    description: Balance information
+    properties:
+      created_at:
+        description: Creation timestamp
+        type: string
+      current_balance:
+        description: Current balance amount
+        example: 12500.75
+        type: number
+      id:
+        description: Unique identifier for the entity
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      initial_balance:
+        description: Initial balance amount
+        example: 10000
+        type: number
+      notes:
+        description: Notes about the balance
+        example: Adjusted initial balance
+        type: string
+      updated_at:
+        description: Last update timestamp
+        type: string
+    type: object
+  models.Order:
+    description: Order information
+    properties:
+      created_at:
+        description: Creation timestamp
+        type: string
+      id:
+        description: Unique identifier for the entity
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      notes:
+        description: Additional notes about the order
+        example: Special delivery instructions
+        type: string
+      order_date:
+        description: Date when the order was placed
+        type: string
+      order_items:
+        description: Items in the order (simplified to avoid recursion)
+        items:
+          $ref: '#/definitions/models.OrderItem'
+        type: array
+      payment:
+        allOf:
+        - $ref: '#/definitions/models.Payment'
+        description: Payment information for the order (simplified to avoid recursion)
+      payment_status:
+        description: Payment status of the order
+        example: unpaid
+        type: string
+      reseller:
+        allOf:
+        - $ref: '#/definitions/models.Reseller'
+        description: Reseller who placed the order (simplified to avoid recursion)
+      reseller_id:
+        description: ID of the reseller who placed the order
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      status:
+        description: Status of the order
+        example: pending
+        type: string
+      total_amount:
+        description: Total amount of the order
+        example: 1999.98
+        type: number
+      updated_at:
+        description: Last update timestamp
+        type: string
+    type: object
+  models.OrderItem:
+    description: Order item information
+    properties:
+      created_at:
+        description: Creation timestamp
+        type: string
+      id:
+        description: Unique identifier for the entity
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      order:
+        allOf:
+        - $ref: '#/definitions/models.Order'
+        description: Order this item belongs to (simplified to avoid recursion)
+      order_id:
+        description: ID of the order this item belongs to
+        example: 550e8400-e29b-41d4-a716-446655440001
+        type: string
+      price:
+        description: Price of the product at the time of order
+        example: 999.99
+        type: number
+      product:
+        allOf:
+        - $ref: '#/definitions/models.Product'
+        description: Product being ordered (simplified to avoid recursion)
+      product_id:
+        description: ID of the product in this order item
+        example: 550e8400-e29b-41d4-a716-446655440002
+        type: string
+      quantity:
+        description: Quantity of the product ordered
+        example: 2
+        type: integer
+      subtotal:
+        description: Subtotal for this item (quantity * price)
+        example: 1999.98
+        type: number
+      updated_at:
+        description: Last update timestamp
+        type: string
+    type: object
+  models.Payment:
+    description: Payment information
+    properties:
+      amount_paid:
+        description: Amount that has been paid
+        example: 500
+        type: number
+      cash_in_transactions:
+        description: Cash in transactions associated with this payment (simplified
+          to avoid recursion)
+        items:
+          $ref: '#/definitions/models.Transaction'
+        type: array
+      created_at:
+        description: Creation timestamp
+        type: string
+      id:
+        description: Unique identifier for the entity
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      notes:
+        description: Additional notes about the payment
+        example: Partial payment received
+        type: string
+      order:
+        allOf:
+        - $ref: '#/definitions/models.Order'
+        description: Order this payment is for (simplified to avoid recursion)
+      order_id:
+        description: ID of the order this payment is for
+        example: 550e8400-e29b-41d4-a716-446655440001
+        type: string
+      payment_date:
+        description: Date when the payment was made
+        type: string
+      status:
+        description: Status of the payment
+        example: partially_paid
+        type: string
+      total_amount:
+        description: Total amount of the order
+        example: 1999.98
+        type: number
+      updated_at:
+        description: Last update timestamp
+        type: string
+    type: object
+  models.Product:
+    description: Product information
+    properties:
+      created_at:
+        description: Creation timestamp
+        type: string
+      current_stock:
+        description: Current stock quantity
+        example: 50
+        type: integer
+      description:
+        description: Product description
+        example: High performance laptop
+        type: string
+      id:
+        description: Unique identifier for the entity
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      min_stock_alert:
+        description: Minimum stock alert threshold
+        example: 10
+        type: integer
+      name:
+        description: Product name
+        example: Laptop
+        type: string
+      order_items:
+        description: Order items associated with this product (simplified to avoid
+          recursion)
+        items:
+          $ref: '#/definitions/models.OrderItem'
+        type: array
+      price:
+        description: Product price
+        example: 999.99
+        type: number
+      sku:
+        description: Product SKU (Stock Keeping Unit)
+        example: LAP-001
+        type: string
+      status:
+        description: Status of the product
+        example: active
+        type: string
+      updated_at:
+        description: Last update timestamp
+        type: string
+    type: object
+  models.Reseller:
+    description: Reseller information
+    properties:
+      address:
+        description: Reseller address
+        example: 123 Main St, City, Country
+        type: string
+      created_at:
+        description: Creation timestamp
+        type: string
+      email:
+        description: Reseller email
+        example: john@example.com
+        type: string
+      id:
+        description: Unique identifier for the entity
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      name:
+        description: Reseller name
+        example: John Doe
+        type: string
+      orders:
+        description: Orders associated with this reseller (simplified to avoid recursion)
+        items:
+          $ref: '#/definitions/models.Order'
+        type: array
+      phone:
+        description: Reseller phone number
+        example: +1-234-567-8900
+        type: string
+      status:
+        description: Status of the reseller
+        example: active
+        type: string
+      updated_at:
+        description: Last update timestamp
+        type: string
+    type: object
+  models.Transaction:
+    description: Transaction information
+    properties:
+      amount:
+        description: Amount of the transaction
+        example: 3000
+        type: number
+      category:
+        allOf:
+        - $ref: '#/definitions/models.TransactionCategory'
+        description: Category of the transaction
+        example: SALARY
+      created_at:
+        description: Creation timestamp
+        type: string
+      date:
+        description: Date of the transaction
+        type: string
+      description:
+        description: Description of the transaction
+        example: Monthly salary payment
+        type: string
+      id:
+        description: Unique identifier for the entity
+        example: 550e8400-e29b-41d4-a716-446655440000
+        type: string
+      payment_id:
+        description: Payment ID if this transaction is related to a payment
+        type: string
+      reference_id:
+        description: Reference ID for the transaction (e.g. Order ID, Payment ID)
+        type: string
+      type:
+        allOf:
+        - $ref: '#/definitions/models.TransactionType'
+        description: Type of the transaction
+        example: CASH_IN
+      updated_at:
+        description: Last update timestamp
+        type: string
+    type: object
+  models.TransactionCategory:
+    enum:
+    - RENT
+    - SALARY
+    - EQUIPMENT
+    - PAYMENT
+    - OTHER
+    type: string
+    x-enum-comments:
+      PaymentTran: Renamed from "Payment" to "PaymentTran" to avoid conflict with
+        Payment model
+    x-enum-varnames:
+    - Rent
+    - Salary
+    - Equipment
+    - PaymentTran
+    - Other
+  models.TransactionType:
+    enum:
+    - CASH_IN
+    - CASH_OUT
+    type: string
+    x-enum-varnames:
+    - CashIn
+    - CashOut
+host: localhost:3000
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: API for managing resellers, products, orders and financial transactions
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Reseller Management API
+  version: "1.0"
+paths:
+  /balance:
+    get:
+      description: Get the current system balance
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Balance'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get the current balance
+      tags:
+      - Financial Management
+    put:
+      consumes:
+      - application/json
+      description: Update the initial balance and adjust accordingly
+      parameters:
+      - description: Balance information
+        in: body
+        name: balance
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.BalanceUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update the initial balance
+      tags:
+      - Financial Management
+  /dashboard:
+    get:
+      description: Get an overview dashboard with current balance, cash flows, and
+        alerts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/interfaces.DashboardData'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get dashboard data
+      tags:
+      - Dashboard
+  /orders:
+    get:
+      description: Get a list of all orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Order'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all orders
+      tags:
+      - Order Management
+    post:
+      consumes:
+      - application/json
+      description: Create a new order for a selected reseller with multiple items
+      parameters:
+      - description: Order data
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/models.Order'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Order'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new order
+      tags:
+      - Order Management
+  /orders/{id}:
+    delete:
+      description: Delete an existing order by ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete an order
+      tags:
+      - Order Management
+    get:
+      description: Get an order by its unique ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Order'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get an order by ID
+      tags:
+      - Order Management
+    put:
+      consumes:
+      - application/json
+      description: Update an existing order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated order data
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/models.Order'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Order'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update an order
+      tags:
+      - Order Management
+  /orders/{id}/cancel:
+    patch:
+      description: Cancel an existing order and restore stock quantities
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Cancel an order
+      tags:
+      - Order Management
+  /payments:
+    get:
+      description: Get a list of all payments linked to their respective orders and
+        resellers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Payment'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all payments
+      tags:
+      - Payment Management
+  /payments/order/{orderID}:
+    get:
+      description: Get payment information for a specific order
+      parameters:
+      - description: Order ID
+        in: path
+        name: orderID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Payment'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get payment by order ID
+      tags:
+      - Payment Management
+  /payments/order/{orderID}/pay:
+    post:
+      consumes:
+      - application/json
+      description: Record a payment (partial or full) against an order
+      parameters:
+      - description: Order ID
+        in: path
+        name: orderID
+        required: true
+        type: string
+      - description: Payment information
+        in: body
+        name: payment
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.PaymentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Payment'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Record a payment
+      tags:
+      - Payment Management
+  /products:
+    get:
+      description: Get a list of all products with current quantities
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Product'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all products
+      tags:
+      - Product Management
+    post:
+      consumes:
+      - application/json
+      description: Create a new product with provided details
+      parameters:
+      - description: Product data
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.Product'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Product'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new product
+      tags:
+      - Product Management
+  /products/{id}:
+    delete:
+      description: Delete an existing product by ID (with checks to ensure it's not
+        used in any orders)
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a product
+      tags:
+      - Product Management
+    get:
+      description: Get a product by its unique ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Product'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a product by ID
+      tags:
+      - Product Management
+    put:
+      consumes:
+      - application/json
+      description: Update an existing product's details (name, price, etc.)
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated product data
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.Product'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Product'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a product
+      tags:
+      - Product Management
+  /products/{id}/restock:
+    post:
+      consumes:
+      - application/json
+      description: Add quantity to an existing product's stock
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Quantity to add
+        in: body
+        name: quantity
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.RestockRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Product'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Restock a product
+      tags:
+      - Product Management
+  /products/low-stock:
+    get:
+      description: Get a list of products with stock levels below the minimum alert
+        threshold
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Product'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get products with low stock
+      tags:
+      - Product Management
+  /resellers:
+    get:
+      description: Get a list of all resellers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Reseller'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all resellers
+      tags:
+      - Reseller Management
+    post:
+      consumes:
+      - application/json
+      description: Create a new reseller with provided details
+      parameters:
+      - description: Reseller data
+        in: body
+        name: reseller
+        required: true
+        schema:
+          $ref: '#/definitions/models.Reseller'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Reseller'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new reseller
+      tags:
+      - Reseller Management
+  /resellers/{id}:
+    delete:
+      description: Delete an existing reseller by ID
+      parameters:
+      - description: Reseller ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a reseller
+      tags:
+      - Reseller Management
+    get:
+      description: Get a reseller by its unique ID
+      parameters:
+      - description: Reseller ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Reseller'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a reseller by ID
+      tags:
+      - Reseller Management
+    put:
+      consumes:
+      - application/json
+      description: Update an existing reseller's details
+      parameters:
+      - description: Reseller ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated reseller data
+        in: body
+        name: reseller
+        required: true
+        schema:
+          $ref: '#/definitions/models.Reseller'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Reseller'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a reseller
+      tags:
+      - Reseller Management
+  /resellers/{id}/profile:
+    get:
+      description: Get a reseller with their order history and payment status
+      parameters:
+      - description: Reseller ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Reseller'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get reseller profile with order history
+      tags:
+      - Reseller Management
+  /transactions:
+    get:
+      description: Get a list of all financial transactions (CASH_IN and CASH_OUT)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Transaction'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all transactions
+      tags:
+      - Financial Management
+  /transactions/cash-in:
+    post:
+      consumes:
+      - application/json
+      description: Record a CASH_IN transaction for payments received
+      parameters:
+      - description: Cash in transaction data
+        in: body
+        name: transaction
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CashInRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Transaction'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Record a cash in transaction
+      tags:
+      - Financial Management
+  /transactions/cash-out:
+    post:
+      consumes:
+      - application/json
+      description: Record a CASH_OUT transaction with category
+      parameters:
+      - description: Cash out transaction data
+        in: body
+        name: transaction
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CashOutRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Transaction'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Record a cash out transaction
+      tags:
+      - Financial Management
+schemes:
+- http
+- https
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

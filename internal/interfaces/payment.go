@@ -4,17 +4,29 @@ import (
 	"github.com/aryadhira/reseller-management/internal/models"
 )
 
+// DashboardData represents the dashboard overview data
+// @Description Dashboard information
 type DashboardData struct {
-	CurrentBalance       float64                    `json:"current_balance"`
-	TodayCashIn          float64                    `json:"today_cash_in"`
-	ThisMonthCashIn      float64                    `json:"this_month_cash_in"`
-	AllTimeCashIn        float64                    `json:"all_time_cash_in"`
-	TodayCashOut         float64                    `json:"today_cash_out"`
-	ThisMonthCashOut     float64                    `json:"this_month_cash_out"`
-	AllTimeCashOut       float64                    `json:"all_time_cash_out"`
-	RecentTransactions   []models.Transaction       `json:"recent_transactions"`
-	LowStockAlerts       []models.Product           `json:"low_stock_alerts"`
-	UnpaidOrders         []models.Order             `json:"unpaid_orders"`
+	// Current balance in the system
+	CurrentBalance float64 `json:"current_balance" example:"12500.75"`
+	// Total cash in for today
+	TodayCashIn float64 `json:"today_cash_in" example:"2500.00"`
+	// Total cash in for this month
+	ThisMonthCashIn float64 `json:"this_month_cash_in" example:"15000.00"`
+	// Total cash in for all time
+	AllTimeCashIn float64 `json:"all_time_cash_in" example:"50000.00"`
+	// Total cash out for today
+	TodayCashOut float64 `json:"today_cash_out" example:"1200.00"`
+	// Total cash out for this month
+	ThisMonthCashOut float64 `json:"this_month_cash_out" example:"8000.00"`
+	// Total cash out for all time
+	AllTimeCashOut float64 `json:"all_time_cash_out" example:"25000.00"`
+	// Recent transactions
+	RecentTransactions []models.Transaction `json:"recent_transactions"`
+	// Products with low stock alerts
+	LowStockAlerts []models.Product `json:"low_stock_alerts"`
+	// Unpaid orders
+	UnpaidOrders []models.Order `json:"unpaid_orders"`
 }
 
 type PaymentService interface {

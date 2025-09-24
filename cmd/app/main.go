@@ -3,10 +3,10 @@ package main
 import (
 	"log"
 
+	"github.com/aryadhira/reseller-management/internal/docs"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/joho/godotenv"
 
 	"github.com/aryadhira/reseller-management/internal/config"
 	"github.com/aryadhira/reseller-management/internal/database"
@@ -15,11 +15,6 @@ import (
 )
 
 func main() {
-	// Load environment variables
-	if err := godotenv.Load(); err != nil {
-		log.Println("No .env file found")
-	}
-
 	// Initialize configuration
 	cfg := config.LoadConfig()
 
@@ -38,7 +33,7 @@ func main() {
 		},
 	})
 
-	// Additional middlewares
+	// Setup middleware
 	middleware.SetupMiddleware(app)
 
 	// Additional middlewares
@@ -48,10 +43,13 @@ func main() {
 	// Setup routes
 	routes.SetupRoutes(app, db)
 
+	// Setup Swagger documentation
+	docs.RegisterSwaggerRoutes(app)
+
 	// Start server
 	port := cfg.AppPort
 	if port == "" {
-		port = "9099"
+		port = "3000"
 	}
 
 	log.Printf("Server starting on port %s", port)
