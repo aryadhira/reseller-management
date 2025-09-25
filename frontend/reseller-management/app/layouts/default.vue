@@ -1,11 +1,11 @@
 <template>
-  <div class="flex min-h-screen bg-gray-900">
+  <div class="flex min-h-screen">
     <!-- Sidebar -->
     <Sidebar />
     
     <!-- Main Content -->
     <main class="flex-1 overflow-auto">
-      <header class="bg-gray-900 shadow-sm border-b border-gray-800 px-6 py-4">
+      <header class=" shadow-sm border-b border-gray-800 px-6 py-4">
         <div class="flex justify-between items-center">
           <div class="flex items-center space-x-3">
             <!-- Mobile menu button (for future responsiveness) -->

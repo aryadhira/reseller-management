@@ -1,5 +1,5 @@
 <template>
-    <aside class="w-64 bg-gray-800 text-white min-h-screen transition-all duration-300">
+    <aside class="w-64 bg-slate-900 text-white min-h-screen transition-all duration-300">
         <!-- Logo Section -->
         <div class="p-6 ">
             <h2 class="text-xl font-bold">Reseller Management</h2>
