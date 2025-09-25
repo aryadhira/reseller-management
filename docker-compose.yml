@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  backend:
+    image: github.com/aryadhira/reseller-management
+    ports:
+      - "9099:9099"
+    env_file:
+      - ./.env
+    networks:
+      - app-network
+
+  frontend:
+    image: github.com/aryadhira/reseller-management-ui
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./frontend/reseller-management/.env
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

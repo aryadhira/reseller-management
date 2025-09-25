@@ -1,7 +1,7 @@
 // composables/dashboardService.js
 export const useDashboardService = () => {
   const config = useRuntimeConfig();
-  const API_BASE_URL = config.public.baseUrl.replace('/api', '/api/v1'); // Convert base URL to API v1
+  const API_BASE_URL = config.public.baseUrl
 
   // Get dashboard data
   const fetchDashboardData = async () => {

@@ -3,7 +3,7 @@ import { ref } from 'vue';
 // composables/paymentService.js
 export const usePaymentService = () => {
   const config = useRuntimeConfig();
-  const API_BASE_URL = config.public.baseUrl.replace('/api', '/api/v1'); // Convert base URL to API v1
+  const API_BASE_URL = config.public.baseUrl
   
 
   // Get all payments

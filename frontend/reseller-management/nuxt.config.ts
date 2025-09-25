@@ -11,6 +11,10 @@ export default defineNuxtConfig({
       link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
     },
   },
+  devServer: {
+    port: 3000,
+    host: "0.0.0.0",
+  },
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
   modules: ["@nuxt/fonts", "@primevue/nuxt-module"],
@@ -40,7 +44,9 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      baseUrl: process.env.API_URL || "http://localhost:9099/api",
+      baseUrl:
+        process.env.NUXT_PUBLIC_API_URL ||
+        "http://localhost:9099/api/v1",
     },
   },
 });

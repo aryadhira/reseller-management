@@ -1,5 +1,6 @@
 // composables/orderService.js
-const API_BASE_URL = 'http://localhost:9099/api/v1'; // Update with your backend API URL
+const config = useRuntimeConfig();
+const API_BASE_URL = config.public.baseUrl;
 
 export const useOrderService = () => {
   const fetchOrders = async () => {

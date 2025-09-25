@@ -1,7 +1,7 @@
 // composables/transactionService.js
 export const useTransactionService = () => {
   const config = useRuntimeConfig();
-  const API_BASE_URL = config.public.baseUrl.replace('/api', '/api/v1'); // Convert base URL to API v1
+  const API_BASE_URL = config.public.baseUrl
 
   // Get all transactions
   const fetchTransactions = async () => {
